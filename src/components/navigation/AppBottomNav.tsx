@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-import { bottomNavDestinations, type BottomNavKey } from "@/src/constants/routes";
+import { BOTTOM_NAV_ITEMS } from "@/src/navigation/menu";
+import { bottomNavDestinations, type BottomNavKey } from "@/src/navigation/routes";
+import type { ScaleFn } from "@/src/shared/types/scale";
 import { colors } from "@/src/theme/colors";
-
-type ScaleFn = (value: number) => number;
 
 type NavIcons = {
   settings: string;
@@ -80,27 +80,16 @@ export function AppBottomNav({ sx, sy, icons, active = null }: AppBottomNavProps
       ) : null}
 
       <View style={styles.bottomItemsRow}>
-        <BottomNavItem
-          iconUri={icons.settings}
-          label="الاعدادات"
-          sx={sx}
-          sy={sy}
-          onPress={() => router.replace(bottomNavDestinations.settings)}
-        />
-        <BottomNavItem
-          iconUri={icons.history}
-          label="السجل"
-          sx={sx}
-          sy={sy}
-          onPress={() => router.replace(bottomNavDestinations.history)}
-        />
-        <BottomNavItem
-          iconUri={icons.home}
-          label="الرئيسية"
-          sx={sx}
-          sy={sy}
-          onPress={() => router.replace(bottomNavDestinations.home)}
-        />
+        {BOTTOM_NAV_ITEMS.map((item) => (
+          <BottomNavItem
+            key={item.key}
+            iconUri={icons[item.key]}
+            label={item.label}
+            sx={sx}
+            sy={sy}
+            onPress={() => router.replace(bottomNavDestinations[item.key])}
+          />
+        ))}
       </View>
     </View>
   );

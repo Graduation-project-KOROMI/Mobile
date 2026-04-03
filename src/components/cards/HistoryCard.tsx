@@ -1,18 +1,10 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
+import type { HistoryStatus, PredictionHistoryEntry } from "@/src/shared/types/history";
+import type { ScaleFn } from "@/src/shared/types/scale";
 import { colors } from "@/src/theme/colors";
 
-type ScaleFn = (value: number) => number;
-
-export type HistoryStatus = "healthy" | "diseased";
-
-export type PredictionHistoryEntry = {
-  id: string;
-  dateLabel: string;
-  statusLabel: string;
-  status: HistoryStatus;
-  imageUri: string;
-};
+export type { HistoryStatus, PredictionHistoryEntry };
 
 type HistoryCardProps = {
   item: PredictionHistoryEntry;

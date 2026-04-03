@@ -1,18 +1,11 @@
 import * as Linking from "expo-linking";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
+import type { ScaleFn } from "@/src/shared/types/scale";
+import type { TeamMember } from "@/src/shared/types/team";
 import { colors } from "@/src/theme/colors";
 
-type ScaleFn = (value: number) => number;
-
-export type TeamMember = {
-  name: string;
-  avatarUri: string;
-  role?: string;
-  instagramUrl?: string;
-  facebookUrl?: string;
-  whatsappUrl?: string;
-};
+export type { TeamMember };
 
 type SocialIcons = {
   instagram: string;

@@ -2,9 +2,8 @@ import type { ReactNode } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { StyleSheet, View } from "react-native";
 
+import type { ScaleFn } from "@/src/shared/types/scale";
 import { colors } from "@/src/theme/colors";
-
-type ScaleFn = (value: number) => number;
 
 export type ContentCardProps = {
   children: ReactNode;

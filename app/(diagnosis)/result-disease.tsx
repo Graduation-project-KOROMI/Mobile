@@ -1,5 +1,5 @@
-import { ResultRouteContent } from "@/src/components/diagnosis/ResultRouteContent";
+import { ResultDiseaseScreen } from "@/src/features/diagnosis/screens/ResultDiseaseScreen";
 
 export default function ResultDiseaseRoute() {
-  return <ResultRouteContent variant="disease" />;
+  return <ResultDiseaseScreen />;
 }

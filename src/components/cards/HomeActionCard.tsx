@@ -1,8 +1,8 @@
 import { Image, Pressable, StyleSheet, Text } from "react-native";
 
+import type { ScaleFn } from "@/src/shared/types/scale";
 import { colors } from "@/src/theme/colors";
 
-type ScaleFn = (value: number) => number;
 
 type HomeActionCardProps = {
   title: string;

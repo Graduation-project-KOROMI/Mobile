@@ -1,5 +1,5 @@
-import { ResultRouteContent } from "@/src/components/diagnosis/ResultRouteContent";
+import { ResultHealthyScreen } from "@/src/features/diagnosis/screens/ResultHealthyScreen";
 
 export default function ResultHealthyRoute() {
-  return <ResultRouteContent variant="healthy" />;
+  return <ResultHealthyScreen />;
 }

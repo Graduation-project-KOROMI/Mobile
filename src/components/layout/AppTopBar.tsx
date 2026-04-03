@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
-import { authAssets, sharedAssets } from "@/src/constants/assets";
-import { type SidebarItemKey } from "@/src/constants/routes";
 import { AppSidebar } from "@/src/components/navigation/AppSidebar";
-
-type ScaleFn = (value: number) => number;
+import { authAssets, sharedAssets } from "@/src/constants/assets";
+import { type SidebarItemKey } from "@/src/navigation/routes";
+import type { ScaleFn } from "@/src/shared/types/scale";
 
 type AppTopBarProps = {
   sx: ScaleFn;

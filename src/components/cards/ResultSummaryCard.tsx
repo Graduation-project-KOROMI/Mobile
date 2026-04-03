@@ -1,8 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
+import type { ScaleFn } from "@/src/shared/types/scale";
 import { colors } from "@/src/theme/colors";
-
-type ScaleFn = (value: number) => number;
 
 type ResultSummaryCardProps = {
   sx: ScaleFn;

@@ -1,9 +1,8 @@
 import { useRouter } from "expo-router";
 import { Image, Pressable } from "react-native";
 
-import type { AppRoute } from "@/src/constants/routes";
-
-type ScaleFn = (value: number) => number;
+import type { AppRoute } from "@/src/navigation/routes";
+import type { ScaleFn } from "@/src/shared/types/scale";
 
 type BackButtonProps = {
   iconUri: string;

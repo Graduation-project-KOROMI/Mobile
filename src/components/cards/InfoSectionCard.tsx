@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 
-type ScaleFn = (value: number) => number;
+import type { ScaleFn } from "@/src/shared/types/scale";
 
 type InfoSectionCardProps = {
   title: string;

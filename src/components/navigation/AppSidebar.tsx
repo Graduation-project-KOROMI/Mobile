@@ -1,21 +1,11 @@
 import { useRouter } from "expo-router";
 import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
-import {
-  ROUTES,
-  sidebarDestinations,
-  type SidebarItemKey,
-} from "@/src/constants/routes";
 import { sharedAssets } from "@/src/constants/assets";
+import { SIDEBAR_MENU_ITEMS, type SidebarMenuItem } from "@/src/navigation/menu";
+import { ROUTES, sidebarDestinations, type SidebarItemKey } from "@/src/navigation/routes";
+import type { ScaleFn } from "@/src/shared/types/scale";
 import { colors } from "@/src/theme/colors";
-
-type ScaleFn = (value: number) => number;
-
-type SidebarMenuItem = {
-  key: SidebarItemKey;
-  label: string;
-  iconUri: string;
-};
 
 export type AppSidebarProps = {
   visible: boolean;
@@ -24,29 +14,6 @@ export type AppSidebarProps = {
   currentItem?: SidebarItemKey;
   onClose: () => void;
 };
-
-const menuItems: SidebarMenuItem[] = [
-  {
-    key: "home",
-    label: "الرئيسية",
-    iconUri: sharedAssets.sidebar.home,
-  },
-  {
-    key: "history",
-    label: "السجل",
-    iconUri: sharedAssets.sidebar.history,
-  },
-  {
-    key: "settings",
-    label: "الاعدادات",
-    iconUri: sharedAssets.sidebar.settings,
-  },
-  {
-    key: "about",
-    label: "عن كرومي",
-    iconUri: sharedAssets.sidebar.about,
-  },
-];
 
 function MenuButton({
   item,
@@ -181,7 +148,7 @@ export function AppSidebar({ visible, sx, sy, currentItem, onClose }: AppSidebar
               },
             ]}
           >
-            {menuItems.map((item) => (
+            {SIDEBAR_MENU_ITEMS.map((item) => (
               <MenuButton
                 key={item.key}
                 item={item}
@@ -216,7 +183,8 @@ export function AppSidebar({ visible, sx, sy, currentItem, onClose }: AppSidebar
 const styles = StyleSheet.create({
   overlayRoot: {
     flex: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.36)",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    
   },
   contentLayer: {
     flex: 1,

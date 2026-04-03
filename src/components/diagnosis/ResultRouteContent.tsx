@@ -3,21 +3,19 @@ import { Image, Pressable, StyleSheet, Text } from "react-native";
 
 import { ResultSummaryCard } from "@/src/components/cards/ResultSummaryCard";
 import { SecondaryButton } from "@/src/components/controls/SecondaryButton";
-import { ContentCard } from "@/src/components/layout/ContentCard";
 import { AppScreenBackground } from "@/src/components/layout/AppScreenBackground";
 import { AppTopBar } from "@/src/components/layout/AppTopBar";
+import { ContentCard } from "@/src/components/layout/ContentCard";
 import { AppBottomNav } from "@/src/components/navigation/AppBottomNav";
 import { diagnosisAssets } from "@/src/constants/assets";
-import { ROUTES, type ResultVariant } from "@/src/constants/routes";
+import {
+    diseaseDescription,
+    diseaseName,
+    healthyDescription,
+} from "@/src/features/diagnosis/data/diagnosisCopy";
 import { useResponsiveScale } from "@/src/hooks/useResponsiveScale";
+import { ROUTES, type ResultVariant } from "@/src/navigation/routes";
 import { colors } from "@/src/theme/colors";
-
-const healthyDescription =
-  "الورقة سليمة ولا تظهر عليها أي علامات مرضية. استمر في العناية الجيدة بمزرعتك للحفاظ على صحة النبات.";
-
-const diseaseName = "بياض دقيقي";
-const diseaseDescription =
-  "مرض فطري يصيب أوراق العنب، يظهر على شكل طبقة بيضاء تشبه المسحوق، ويؤثر على نمو النبات وجودة المحصول إذا لم يتم علاجه.";
 
 type ResultRouteContentProps = {
   variant: ResultVariant;
