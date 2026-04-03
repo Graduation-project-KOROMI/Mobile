@@ -5,8 +5,8 @@ import { StyleSheet, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import {
-  GlobalErrorBoundary,
-  type GlobalErrorBoundaryFallbackProps,
+    GlobalErrorBoundary,
+    type GlobalErrorBoundaryFallbackProps,
 } from "@/src/components/errors/GlobalErrorBoundary";
 import { useGlobalFatalErrorBridge } from "@/src/hooks/useGlobalFatalErrorBridge";
 import { ROUTES } from "@/src/navigation/routes";
