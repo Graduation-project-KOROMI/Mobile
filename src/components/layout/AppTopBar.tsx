@@ -1,4 +1,9 @@
+import { useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
+
+import { sharedAssets } from "@/src/constants/assets";
+import { type SidebarItemKey } from "@/src/constants/routes";
+import { AppSidebar } from "@/src/components/navigation/AppSidebar";
 
 type ScaleFn = (value: number) => number;
 
@@ -9,6 +14,7 @@ type AppTopBarProps = {
   profileUri?: string;
   menuUri?: string;
   onMenuPress?: () => void;
+  sidebarCurrentItem?: SidebarItemKey;
 };
 
 export function AppTopBar({
@@ -16,9 +22,14 @@ export function AppTopBar({
   sy,
   logoUri,
   profileUri,
-  menuUri,
+  menuUri = sharedAssets.sidebar.menu,
   onMenuPress,
+  sidebarCurrentItem,
 }: AppTopBarProps) {
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const shouldUseInternalSidebar = !onMenuPress;
+  const handleMenuPress = onMenuPress ?? (() => setIsSidebarVisible(true));
+
   return (
     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
       {profileUri ? (
@@ -48,36 +59,32 @@ export function AppTopBar({
       />
 
       {menuUri ? (
-        onMenuPress ? (
-          <Pressable
-            onPress={onMenuPress}
-            style={{
-              position: "absolute",
-              right: sx(23),
-              top: sy(43),
-              width: sx(40),
-              height: sy(27),
-            }}
-          >
-            <Image
-              source={{ uri: menuUri }}
-              style={{ width: "100%", height: "100%" }}
-              resizeMode="contain"
-            />
-          </Pressable>
-        ) : (
+        <Pressable
+          onPress={handleMenuPress}
+          style={{
+            position: "absolute",
+            right: sx(23),
+            top: sy(43),
+            width: sx(40),
+            height: sy(27),
+          }}
+        >
           <Image
             source={{ uri: menuUri }}
-            style={{
-              position: "absolute",
-              right: sx(23),
-              top: sy(43),
-              width: sx(40),
-              height: sy(27),
-            }}
+            style={{ width: "100%", height: "100%" }}
             resizeMode="contain"
           />
-        )
+        </Pressable>
+      ) : null}
+
+      {shouldUseInternalSidebar ? (
+        <AppSidebar
+          visible={isSidebarVisible}
+          sx={sx}
+          sy={sy}
+          currentItem={sidebarCurrentItem}
+          onClose={() => setIsSidebarVisible(false)}
+        />
       ) : null}
     </View>
   );

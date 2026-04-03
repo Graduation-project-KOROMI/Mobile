@@ -9,7 +9,7 @@ export const sharedAssets = {
       require("../../../assets/images/figma/4fe140e4-2d1d-4c48-ba66-77768f6e2cd9.svg"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/6588c2de-a586-4fbd-8d04-cc7c81ce35da.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     home: assetUri(
       require("../../../assets/images/figma/21123db9-bb65-47a0-ba16-0b298f05fd74.png"),

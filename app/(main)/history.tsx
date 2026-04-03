@@ -57,6 +57,7 @@ export default function HistoryRoute() {
         logoUri={mainAssets.history.logo}
         profileUri={mainAssets.history.profile}
         menuUri={mainAssets.history.menu}
+        sidebarCurrentItem="history"
       />
 
       {mockHistory.length > 0 ? (

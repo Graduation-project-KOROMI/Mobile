@@ -24,6 +24,26 @@ type HistoryCardProps = {
   onPress: () => void;
 };
 
+function formatHistoryTimestamp(dateLabel: string) {
+  const normalized = dateLabel.replace(/\s+/g, " ").trim();
+  const meridiemMatch = normalized.match(/\b(AM|PM)\b/i);
+  const meridiem =
+    meridiemMatch?.[1].toUpperCase() === "PM"
+      ? "م"
+      : meridiemMatch?.[1].toUpperCase() === "AM"
+        ? "ص"
+        : "";
+  const withoutMeridiem = normalized.replace(/\b(AM|PM)\b/gi, "").trim();
+  const segments = withoutMeridiem.split(/\s*-\s*/).map((segment) => segment.trim()).filter(Boolean);
+  const timeSegment = segments.find((segment) => /\d{1,2}:\d{2}/.test(segment)) ?? "";
+  const dateSegment = segments.find((segment) => !/\d{1,2}:\d{2}/.test(segment)) ?? withoutMeridiem;
+
+  return {
+    date: dateSegment,
+    time: [timeSegment, meridiem].filter(Boolean).join(" ").trim(),
+  };
+}
+
 export function HistoryCard({
   item,
   top,
@@ -34,6 +54,7 @@ export function HistoryCard({
   onPress,
 }: HistoryCardProps) {
   const isHealthy = item.status === "healthy";
+  const timestamp = formatHistoryTimestamp(item.dateLabel);
 
   return (
     <Pressable
@@ -51,19 +72,51 @@ export function HistoryCard({
         },
       ]}
     >
-      <Text
+      <View
         style={[
-          styles.date,
+          styles.timestampRow,
           {
-            left: sx(36),
-            top: sy(23),
-            width: sx(202),
-            fontSize: sx(20),
+            left: sx(20),
+            top: sy(24),
+            width: sx(220),
+            gap: sx(6),
           },
         ]}
       >
-        {item.dateLabel}
-      </Text>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.82}
+          style={[
+            styles.timestampDate,
+            {
+              fontSize: sx(18),
+              maxWidth: sx(148),
+            },
+          ]}
+        >
+          {timestamp.date}
+        </Text>
+        {timestamp.time ? (
+          <>
+            <Text style={[styles.timestampSeparator, { fontSize: sx(14) }]}>•</Text>
+            <Text
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.9}
+              style={[
+                styles.timestampTime,
+                {
+                  fontSize: sx(18),
+                  maxWidth: sx(66),
+                },
+              ]}
+            >
+              {timestamp.time}
+            </Text>
+          </>
+        ) : null}
+      </View>
 
       <Image
         source={{ uri: item.imageUri }}
@@ -142,11 +195,28 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
   },
-  date: {
+  timestampRow: {
     position: "absolute",
+    flexDirection: "row-reverse",
+    alignItems: "center",
+  },
+  timestampDate: {
+    color: colors.textPrimary,
+    fontFamily: "Tajawal_700Bold",
+    textAlign: "right",
+    writingDirection: "rtl",
+    includeFontPadding: false,
+  },
+  timestampSeparator: {
     color: colors.textPrimary,
     fontFamily: "Tajawal_700Bold",
     textAlign: "center",
+    includeFontPadding: false,
+  },
+  timestampTime: {
+    color: colors.textPrimary,
+    fontFamily: "Tajawal_700Bold",
+    textAlign: "left",
     includeFontPadding: false,
   },
   statusPill: {

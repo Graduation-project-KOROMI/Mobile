@@ -43,6 +43,7 @@ export function BackButton({
   return (
     <Pressable
       onPress={handlePress}
+      hitSlop={8}
       style={{
         position: "absolute",
         right: sx(right),
@@ -51,6 +52,8 @@ export function BackButton({
         height: sy(30),
         alignItems: "center",
         justifyContent: "center",
+        zIndex: 20,
+        elevation: 20,
       }}
     >
       <Image

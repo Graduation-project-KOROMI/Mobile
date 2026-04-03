@@ -12,10 +12,11 @@ export type ContentCardProps = {
   sy: ScaleFn;
   top: number;
   width: number;
-  height: number;
+  height?: number;
   borderRadius?: number;
   left?: number;
   right?: number;
+  bottom?: number;
   backgroundColor?: string;
   style?: StyleProp<ViewStyle>;
 };
@@ -30,6 +31,7 @@ export function ContentCard({
   borderRadius = 42,
   left = 24,
   right,
+  bottom,
   backgroundColor = colors.cardBackground,
   style,
 }: ContentCardProps) {
@@ -40,10 +42,11 @@ export function ContentCard({
         {
           top: sy(top),
           width: sx(width),
-          height: sy(height),
+          height: height === undefined ? undefined : sy(height),
           borderRadius: sx(borderRadius),
           left: right === undefined ? sx(left) : undefined,
           right: right === undefined ? undefined : sx(right),
+          bottom: bottom === undefined ? undefined : sy(bottom),
           backgroundColor,
           shadowRadius: sx(18),
           elevation: Math.max(3, Math.round(sx(6))),

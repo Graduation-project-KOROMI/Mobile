@@ -9,7 +9,7 @@ export const mainAssets = {
       require("../../../assets/images/figma/ada2cfb8-47f4-440e-8067-b00985bef647.png"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/d6585446-900d-4ccf-8f2f-26d031b43e6b.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     logo: assetUri(require("../../../assets/images/app_icon.png")),
     upload: assetUri(
@@ -39,7 +39,7 @@ export const mainAssets = {
       require("../../../assets/images/figma/059588c4-4080-4348-9b3d-4b3d28b6e11f.svg"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/1152d049-3e0d-462f-baac-a101a3332f0e.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     navHome: assetUri(
       require("../../../assets/images/figma/4ff49a3a-8eae-4b0d-8887-8bd0d11ebf85.png"),
@@ -86,7 +86,7 @@ export const mainAssets = {
       require("../../../assets/images/figma/a68243f2-0d12-42c8-8390-3b2c2d897cb1.svg"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/845fb487-a41d-492f-b001-f9d6fcd7d444.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     back: assetUri(
       require("../../../assets/images/figma/7dac4862-7466-4eef-b7a6-27352754f9ad.png"),
@@ -127,7 +127,7 @@ export const mainAssets = {
       require("../../../assets/images/figma/a00dbe31-abf3-44b9-8562-c086043b0153.svg"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/c4f3860f-9d9c-4fac-9ace-e395e8c3a373.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     preview: assetUri(
       require("../../../assets/images/figma/634f072d-7d49-450b-b860-3161e63c5900.jpg"),

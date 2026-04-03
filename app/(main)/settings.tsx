@@ -37,6 +37,7 @@ export default function SettingsRoute() {
         logoUri={mainAssets.settings.logo}
         profileUri={mainAssets.settings.profile}
         menuUri={mainAssets.settings.menu}
+        sidebarCurrentItem="settings"
       />
 
       <ContentCard

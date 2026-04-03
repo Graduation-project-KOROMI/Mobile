@@ -112,7 +112,14 @@ export function AppSidebar({ visible, sx, sy, currentItem, onClose }: AppSidebar
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      statusBarTranslucent
+      navigationBarTranslucent
+      onRequestClose={onClose}
+    >
       <View style={styles.overlayRoot}>
         <Pressable style={StyleSheet.absoluteFillObject} onPress={onClose} />
 

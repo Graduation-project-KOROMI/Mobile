@@ -1,21 +1,18 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
 
+import { PrimaryButton } from "@/src/components/controls/PrimaryButton";
 import { AppScreenBackground } from "@/src/components/layout/AppScreenBackground";
 import { AppTopBar } from "@/src/components/layout/AppTopBar";
 import { ContentCard } from "@/src/components/layout/ContentCard";
 import { AppBottomNav } from "@/src/components/navigation/AppBottomNav";
-import { AppSidebar } from "@/src/components/navigation/AppSidebar";
 import { BackButton } from "@/src/components/navigation/BackButton";
 import { infoAssets } from "@/src/constants/assets";
 import { ROUTES } from "@/src/constants/routes";
 import { useResponsiveScale } from "@/src/hooks/useResponsiveScale";
 import { colors } from "@/src/theme/colors";
-
-const faqIllustrationUri =
-  "https://www.figma.com/api/mcp/asset/1637f484-e4dd-4a6a-97be-7f088e47dc62";
 
 const aboutFaqItems = [
   {
@@ -28,13 +25,13 @@ const aboutFaqItems = [
     id: "how-it-works",
     question: "كيف يعمل كرومي؟",
     answer:
-      "يلتقط المستخدم صورة للورقة أو يرفعها، ثم يستخدم كرومي الذكاء الاصطناعي لتحليلها وتحديد الحالة وتقديم معلومات تساعد على اتخاذ القرار الصحيح.",
+      "تلتقط صورة للورقة أو ترفعها، ثم يستخدم كرومي الذكاء الاصطناعي لتحليلها وتحديد الحالة وتقديم معلومات تساعدك على اتخاذ القرار الصحيح.",
   },
   {
     id: "what-it-offers",
     question: "ماذا يقدم كرومي للمستخدم؟",
     answer:
-      "يمنحك نتيجة مفهومة ومعرفة عملية تساعدك على فهم الحالة، متابعة خطوات التعامل معها، وحماية نباتاتك وتحسين جودة الإنتاج.",
+      "يمنحك نتيجة مفهومة وخطوات عملية تساعدك على فهم الحالة، متابعة طريقة التعامل معها، وحماية نباتاتك وتحسين جودة الإنتاج.",
   },
   {
     id: "is-it-easy",
@@ -51,69 +48,87 @@ const aboutFaqItems = [
 ] as const;
 
 type AccordionItemProps = {
+  itemId: string;
   question: string;
   answer: string;
   expanded: boolean;
   onPress: () => void;
+  onMeasure: (itemId: string, y: number, height: number) => void;
   sx: (value: number) => number;
   sy: (value: number) => number;
 };
 
 function AccordionItem({
+  itemId,
   question,
   answer,
   expanded,
   onPress,
+  onMeasure,
   sx,
   sy,
 }: AccordionItemProps) {
   return (
     <Animated.View
       layout={LinearTransition.duration(220)}
+      onLayout={(event) => {
+        const { y, height } = event.nativeEvent.layout;
+        onMeasure(itemId, y, height);
+      }}
       style={[
         styles.accordionItem,
         {
-          width: sx(270),
+          borderRadius: sx(20),
+          paddingHorizontal: sx(14),
+          paddingVertical: sy(12),
         },
+        expanded ? styles.accordionItemExpanded : null,
       ]}
     >
-      <Pressable
+      <AnimatedPressable
         accessibilityRole="button"
         accessibilityState={{ expanded }}
         onPress={onPress}
-        style={[
-          styles.questionRow,
-          {
-            minHeight: sy(56),
-            paddingVertical: sy(14),
-            paddingHorizontal: sx(8),
-          },
-        ]}
+        style={styles.questionRow}
       >
+        <View
+          style={[
+            styles.toggleChip,
+            {
+              width: sx(32),
+              height: sy(32),
+              borderRadius: sx(16),
+            },
+            expanded ? styles.toggleChipExpanded : null,
+          ]}
+        >
+          <Text
+            style={[
+              styles.toggleIcon,
+              {
+                fontSize: sx(22),
+                lineHeight: sy(22),
+              },
+              expanded ? styles.toggleIconExpanded : null,
+            ]}
+          >
+            {expanded ? "−" : "+"}
+          </Text>
+        </View>
+
         <Text
           style={[
             styles.questionText,
             {
-              fontSize: sx(18),
-              lineHeight: sy(22),
-              marginRight: sx(16),
+              marginRight: sx(12),
+              fontSize: sx(16),
+              lineHeight: sy(21),
             },
           ]}
         >
           {question}
         </Text>
-        <Text
-          style={[
-            styles.toggleIcon,
-            {
-              fontSize: sx(32),
-              lineHeight: sy(24),
-            },
-          ]}
-        >
-          {expanded ? "−" : "+"}
-        </Text>
-      </Pressable>
+      </AnimatedPressable>
 
       {expanded ? (
         <Animated.View
@@ -122,9 +137,8 @@ function AccordionItem({
           style={[
             styles.answerContainer,
             {
-              paddingHorizontal: sx(8),
-              paddingBottom: sy(18),
-              paddingTop: sy(4),
+              marginTop: sy(12),
+              paddingTop: sy(12),
             },
           ]}
         >
@@ -145,15 +159,84 @@ function AccordionItem({
   );
 }
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export default function AboutKoromiRoute() {
   const router = useRouter();
   const { sx, sy } = useResponsiveScale();
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  const faqScrollViewRef = useRef<ScrollView>(null);
+  const faqItemLayoutsRef = useRef<Record<string, { y: number; height: number }>>({});
+  const faqScrollMetricsRef = useRef({
+    viewportHeight: 0,
+    offsetY: 0,
+  });
+  const autoScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearAutoScrollTimeout = () => {
+    if (autoScrollTimeoutRef.current) {
+      clearTimeout(autoScrollTimeoutRef.current);
+      autoScrollTimeoutRef.current = null;
+    }
+  };
+
+  const scrollItemIntoView = (itemId: string) => {
+    clearAutoScrollTimeout();
+    autoScrollTimeoutRef.current = setTimeout(() => {
+      const layout = faqItemLayoutsRef.current[itemId];
+      const { viewportHeight, offsetY } = faqScrollMetricsRef.current;
+
+      if (!layout || viewportHeight <= 0) {
+        return;
+      }
+
+      const topPadding = sy(8);
+      const bottomPadding = sy(12);
+      const itemTop = layout.y;
+      const itemBottom = layout.y + layout.height;
+      const viewportBottom = offsetY + viewportHeight;
+      let nextOffset = offsetY;
+
+      if (itemBottom + bottomPadding > viewportBottom) {
+        nextOffset = itemBottom - viewportHeight + bottomPadding;
+      }
+
+      if (itemTop - topPadding < nextOffset) {
+        nextOffset = Math.max(0, itemTop - topPadding);
+      }
+
+      if (Math.abs(nextOffset - offsetY) > 1) {
+        faqScrollViewRef.current?.scrollTo({
+          y: nextOffset,
+          animated: true,
+        });
+      }
+    }, 260);
+  };
+
+  const handleAccordionMeasure = (itemId: string, y: number, height: number) => {
+    faqItemLayoutsRef.current[itemId] = { y, height };
+
+    if (expandedItemId === itemId) {
+      scrollItemIntoView(itemId);
+    }
+  };
 
   const handleToggleItem = (itemId: string) => {
-    setExpandedItemId((currentItemId) => (currentItemId === itemId ? null : itemId));
+    setExpandedItemId((currentItemId) => {
+      const nextItemId = currentItemId === itemId ? null : itemId;
+
+      if (nextItemId) {
+        scrollItemIntoView(nextItemId);
+      } else {
+        clearAutoScrollTimeout();
+      }
+
+      return nextItemId;
+    });
   };
+
+  useEffect(() => clearAutoScrollTimeout, []);
 
   return (
     <AppScreenBackground
@@ -170,80 +253,124 @@ export default function AboutKoromiRoute() {
         logoUri={infoAssets.aboutKoromi.logo}
         profileUri={infoAssets.aboutKoromi.profile}
         menuUri={infoAssets.aboutKoromi.menu}
-        onMenuPress={() => setIsSidebarVisible(true)}
+        sidebarCurrentItem="about"
       />
 
       <ContentCard
         sx={sx}
         sy={sy}
-        top={128}
+        top={118}
         width={345}
-        height={600}
-        borderRadius={45}
+        bottom={88}
+        borderRadius={42}
+        style={{
+          paddingTop: sy(20),
+          paddingHorizontal: sx(18),
+          paddingBottom: sy(14),
+        }}
       >
         <BackButton
           iconUri={infoAssets.aboutKoromi.arrow}
           sx={sx}
           sy={sy}
-          top={17}
-          right={24}
+          top={18}
+          right={22}
           fallbackRoute={ROUTES.home}
         />
 
-        <Text style={[styles.title, { marginTop: sy(20), fontSize: sx(20) }]}>عن كرومي</Text>
+        <View style={styles.cardContent}>
+          <Text style={[styles.title, { fontSize: sx(20), lineHeight: sy(24) }]}>عن كرومي</Text>
 
-        <Image
-          source={{ uri: faqIllustrationUri }}
-          style={{
-            position: "absolute",
-            alignSelf: "center",
-            top: sy(52),
-            width: sx(148),
-            height: sy(114),
-          }}
-          resizeMode="contain"
-        />
-
-        <ScrollView
-          style={{
-            position: "absolute",
-            top: sy(183),
-            left: sx(24),
-            width: sx(270),
-            maxHeight: sy(395),
-          }}
-          contentContainerStyle={{
-            paddingBottom: sy(12),
-          }}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-        >
-          {aboutFaqItems.map((item) => (
-            <AccordionItem
-              key={item.id}
-              question={item.question}
-              answer={item.answer}
-              expanded={expandedItemId === item.id}
-              onPress={() => handleToggleItem(item.id)}
-              sx={sx}
-              sy={sy}
+          <View
+            style={[
+              styles.heroCard,
+              {
+                marginTop: sy(14),
+                borderRadius: sx(24),
+                paddingHorizontal: sx(14),
+                paddingVertical: sy(12),
+              },
+            ]}
+          >
+            <Image
+              source={{ uri: infoAssets.aboutKoromi.illustration }}
+              style={{
+                width: sx(76),
+                height: sy(76),
+              }}
+              resizeMode="contain"
             />
-          ))}
-        </ScrollView>
-      </ContentCard>
 
-      <Pressable
-        onPress={() => router.push(ROUTES.team)}
-        style={{
-          position: "absolute",
-          top: sy(738),
-          alignSelf: "center",
-          width: sx(304),
-          alignItems: "center",
-        }}
-      >
-        <Text style={[styles.teamLink, { fontSize: sx(16), lineHeight: sy(19) }]}>فريقنا</Text>
-      </Pressable>
+            <View style={[styles.heroTextBlock, { marginRight: sx(12) }]}>
+              <Text style={[styles.heroEyebrow, { fontSize: sx(12), lineHeight: sy(16) }]}>
+                تشخيص أوضح
+              </Text>
+              <Text style={[styles.heroTitle, { fontSize: sx(18), lineHeight: sy(24) }]}>
+                تجربة أسهل للعناية بكرومك
+              </Text>
+              <Text style={[styles.heroSubtitle, { fontSize: sx(12), lineHeight: sy(18) }]}>
+                يجمع كرومي بين سرعة التحليل ووضوح النتيجة ليمنحك فهماً أسرع لحالة النبات.
+              </Text>
+            </View>
+          </View>
+
+          <View style={[styles.sectionHeader, { marginTop: sy(14) }]}>
+            <Text style={[styles.sectionTitle, { fontSize: sx(16), lineHeight: sy(20) }]}>
+              الأسئلة الشائعة
+            </Text>
+            <Text style={[styles.sectionMeta, { fontSize: sx(12), lineHeight: sy(16) }]}>
+              {aboutFaqItems.length} أسئلة
+            </Text>
+          </View>
+
+          <ScrollView
+            ref={faqScrollViewRef}
+            style={{ flex: 1, marginTop: sy(10) }}
+            contentContainerStyle={{
+              paddingBottom: sy(6),
+              gap: sy(10),
+            }}
+            onLayout={(event) => {
+              faqScrollMetricsRef.current.viewportHeight = event.nativeEvent.layout.height;
+            }}
+            onScroll={(event) => {
+              faqScrollMetricsRef.current.offsetY = event.nativeEvent.contentOffset.y;
+            }}
+            scrollEventThrottle={16}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+          >
+            {aboutFaqItems.map((item) => (
+              <AccordionItem
+                key={item.id}
+                itemId={item.id}
+                question={item.question}
+                answer={item.answer}
+                expanded={expandedItemId === item.id}
+                onPress={() => handleToggleItem(item.id)}
+                onMeasure={handleAccordionMeasure}
+                sx={sx}
+                sy={sy}
+              />
+            ))}
+          </ScrollView>
+
+          <PrimaryButton
+            label="تعرف على فريقنا"
+            onPress={() => router.push(ROUTES.team)}
+            style={{
+              width: "100%",
+              height: sy(52),
+              borderRadius: sx(18),
+              marginTop: sy(8),
+            }}
+            textStyle={{
+              fontSize: sx(18),
+              lineHeight: sy(22),
+            }}
+          />
+        </View>
+      </ContentCard>
 
       <AppBottomNav
         sx={sx}
@@ -255,19 +382,14 @@ export default function AboutKoromiRoute() {
           home: infoAssets.aboutKoromi.navHome,
         }}
       />
-
-      <AppSidebar
-        visible={isSidebarVisible}
-        sx={sx}
-        sy={sy}
-        currentItem="about"
-        onClose={() => setIsSidebarVisible(false)}
-      />
     </AppScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  cardContent: {
+    flex: 1,
+  },
   title: {
     color: colors.textPrimary,
     fontFamily: "Tajawal_700Bold",
@@ -275,16 +397,68 @@ const styles = StyleSheet.create({
     writingDirection: "rtl",
     includeFontPadding: false,
   },
+  heroCard: {
+    backgroundColor: "#F7FFF5",
+    borderWidth: 1,
+    borderColor: "#D9F3D2",
+    flexDirection: "row-reverse",
+    alignItems: "center",
+  },
+  heroTextBlock: {
+    flex: 1,
+    alignItems: "flex-end",
+  },
+  heroEyebrow: {
+    color: colors.primary,
+    fontFamily: "Tajawal_700Bold",
+    textAlign: "right",
+    writingDirection: "rtl",
+    includeFontPadding: false,
+  },
+  heroTitle: {
+    color: colors.textPrimary,
+    fontFamily: "Tajawal_700Bold",
+    textAlign: "right",
+    writingDirection: "rtl",
+    includeFontPadding: false,
+  },
+  heroSubtitle: {
+    color: colors.textMuted,
+    fontFamily: "Tajawal_400Regular",
+    textAlign: "right",
+    writingDirection: "rtl",
+    includeFontPadding: false,
+  },
+  sectionHeader: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  sectionTitle: {
+    color: colors.textPrimary,
+    fontFamily: "Tajawal_700Bold",
+    textAlign: "right",
+    writingDirection: "rtl",
+    includeFontPadding: false,
+  },
+  sectionMeta: {
+    color: colors.textMuted,
+    fontFamily: "Tajawal_700Bold",
+    textAlign: "left",
+    includeFontPadding: false,
+  },
   accordionItem: {
-    borderTopWidth: 0.75,
-    borderBottomWidth: 0.75,
-    borderColor: "#CDCDCD",
-    backgroundColor: "transparent",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E1EFE0",
+  },
+  accordionItemExpanded: {
+    backgroundColor: "#F8FFF6",
+    borderColor: "#BDEAB6",
   },
   questionRow: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     alignItems: "center",
-    justifyContent: "space-between",
   },
   questionText: {
     flex: 1,
@@ -294,28 +468,32 @@ const styles = StyleSheet.create({
     writingDirection: "rtl",
     includeFontPadding: false,
   },
+  toggleChip: {
+    backgroundColor: "#F2F2F2",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  toggleChipExpanded: {
+    backgroundColor: colors.primary,
+  },
   toggleIcon: {
     color: colors.textPrimary,
     fontFamily: "Tajawal_700Bold",
     textAlign: "center",
-    minWidth: 24,
+    includeFontPadding: false,
+  },
+  toggleIconExpanded: {
+    color: "#FFFFFF",
   },
   answerContainer: {
-    backgroundColor: "transparent",
+    borderTopWidth: 1,
+    borderTopColor: "#DCEED8",
   },
   answerText: {
-    color: colors.primary,
-    fontFamily: "Tajawal_700Bold",
+    color: colors.textPrimary,
+    fontFamily: "Tajawal_400Regular",
     textAlign: "right",
     writingDirection: "rtl",
     includeFontPadding: false,
-  },
-  teamLink: {
-    color: colors.primary,
-    fontFamily: "Tajawal_700Bold",
-    textAlign: "center",
-    writingDirection: "rtl",
-    includeFontPadding: false,
-    textDecorationLine: "underline",
   },
 });

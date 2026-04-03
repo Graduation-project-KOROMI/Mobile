@@ -21,7 +21,7 @@ export const diagnosisAssets = {
       require("../../../assets/images/figma/c07048b0-e3fe-4e03-b19a-0349864a680f.svg"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/05fcdc6e-ef2c-44b4-a327-6136a887f9f0.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     shareHealthy: assetUri(
       require("../../../assets/images/figma/4797b4ea-dc7e-4868-b974-602af1ef3b4a.png"),
@@ -62,7 +62,7 @@ export const diagnosisAssets = {
       require("../../../assets/images/figma/0f094f9f-d1a6-4627-9cce-e429c33ac791.svg"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/479ff760-58fe-44f3-833c-e0b1ea6bc90b.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     back: assetUri(
       require("../../../assets/images/figma/fa04cb68-da31-4c14-91ee-dcf18f45061e.png"),
@@ -91,7 +91,7 @@ export const diagnosisAssets = {
       require("../../../assets/images/figma/07a83105-fabd-4cce-911b-839bb58cac86.svg"),
     ),
     menu: assetUri(
-      require("../../../assets/images/figma/c36c4f4a-b20d-483b-851b-ee2940d3094a.svg"),
+      require("../../../assets/images/figma/menu.png"),
     ),
     back: assetUri(
       require("../../../assets/images/figma/94fc2a7a-fa00-4dd3-a879-9872b544a14c.png"),
