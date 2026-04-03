@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
-import { sharedAssets } from "@/src/constants/assets";
+import { authAssets, sharedAssets } from "@/src/constants/assets";
 import { type SidebarItemKey } from "@/src/constants/routes";
 import { AppSidebar } from "@/src/components/navigation/AppSidebar";
 
@@ -29,6 +29,7 @@ export function AppTopBar({
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const shouldUseInternalSidebar = !onMenuPress;
   const handleMenuPress = onMenuPress ?? (() => setIsSidebarVisible(true));
+  const resolvedLogoUri = logoUri.toLowerCase().includes(".svg") ? authAssets.appIcon : logoUri;
 
   return (
     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
@@ -47,7 +48,7 @@ export function AppTopBar({
       ) : null}
 
       <Image
-        source={{ uri: logoUri }}
+        source={{ uri: resolvedLogoUri }}
         style={{
           position: "absolute",
           top: sy(27),
