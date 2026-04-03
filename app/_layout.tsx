@@ -1,5 +1,5 @@
-import { Stack } from "expo-router";
+import AuthStack from "../src/navigation/AuthStack";
 
 export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <AuthStack />;
 }

@@ -1,14 +1,15 @@
 import { Tajawal_700Bold, useFonts } from "@expo-google-fonts/tajawal";
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useMemo, useState } from "react";
 import {
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    useWindowDimensions,
-    View,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
 } from "react-native";
 
 import { COLORS } from "../constants/colors";
@@ -25,6 +26,7 @@ const BASE_WIDTH = 393;
 const BASE_HEIGHT = 852;
 
 export default function LoginScreen() {
+  const router = useRouter();
   const { width, height } = useWindowDimensions();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,7 +64,7 @@ export default function LoginScreen() {
           ]}
         >
           <Image
-            source={require("../../assets/images/loginlogo.png")}
+            source={require("../../assets/images/app_icon.png")}
             style={{
               position: "absolute",
               top: sy(44),
@@ -211,6 +213,7 @@ export default function LoginScreen() {
                 width: sx(162),
               },
             ]}
+            onPress={() => router.push("./register")}
           >
             <Text
               style={[
