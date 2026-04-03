@@ -108,7 +108,13 @@ export default function SplashScreen() {
         <View style={styles.backgroundBase} />
         <Image
           source={require("../../assets/images/splash_bg.jpg")}
-          style={styles.backgroundPattern}
+          style={[
+            styles.backgroundPattern,
+            {
+              width: sx(BASE_WIDTH),
+              height: sy(BASE_HEIGHT),
+            },
+          ]}
           resizeMode="cover"
         />
 
@@ -185,7 +191,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#E9F8E5",
   },
   backgroundPattern: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute",
+    top: 0,
+    alignSelf: "center",
     opacity: 0.2,
   },
   logo: {
